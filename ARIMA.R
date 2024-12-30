@@ -3,8 +3,6 @@
 #############################################################################################################################################
 rm(list=ls(all=TRUE)) # clear the environment
 
-# /Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code
-
 #################################################### library all the packages to be used ####################################################
 library(readxl)
 library(tidyverse)
@@ -17,7 +15,7 @@ library(forecast)
 library(writexl)
 
 ######################################### input the raw data and perform preliminary transformation #########################################
-dt <- read_xlsx(path = "/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/HiMCM/past paper/2021/2021 Problem A/2021_HiMCM_LakeMead_MonthlyElevationData.xlsx", range = "A2:M89")
+dt <- read_xlsx(path = "2021_HiMCM_LakeMead_MonthlyElevationData.xlsx", range = "A2:M89")
 
 dt <- dt %>% mutate_at(.vars = vars(JAN), .fun = as.numeric)
 
@@ -48,7 +46,7 @@ class(dt2$date) # should be "Date"
 class(dt2$amount) # should be "numeric"
 rm(list=ls()[!ls() %in% "dt2"]) # clear all environment except dt2
 dt2 <- na.omit(dt2)
-# write_xlsx(dt2, "/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code/lake_mead_data.xlsx")
+
 
 ######################################## plot difference process and perform ADF test ########################################
 diff1 <- diff(dt2$amount)
@@ -85,7 +83,7 @@ p3 <- ggplot(dt.diff2, aes(x = date, y = diff2)) +
   theme_classic()
 
 diff.plots <- grid.arrange(p1, p2, p3, ncol = 1)
-ggsave("/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code/difference plots.png", plot = diff.plots, width = 10, height = 9, dpi = 300)
+
 
 # ADF tests, p<0.05 for stationary time series
 adf.test(na.omit(dt2$amount))
@@ -95,7 +93,6 @@ adf.test(na.omit(dt.diff2$diff2))
 rm(list=ls()[!ls() %in% c("dt.diff1", "dt.diff2", "dt2")])
 
 ######################################## ACF and PACF plots used for determining p and q parameters ########################################
-# png("/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code/ACF PACF plots.png", width = 4500, height = 2000, res = 300)
 # par(mfrow = c(1, 2))
 # acf(na.omit(dt.diff1$diff1), main = "") # to determine q
 # pacf(na.omit(dt.diff1$diff1), main = "") # to determine p
@@ -143,7 +140,6 @@ pacf_plot <- ggplot(pacf_data, aes(x = Lag, y = PACF)) +
   )
 
 ACF_PACF <- grid.arrange(acf_plot, pacf_plot, ncol = 2)
-ggsave("/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code/ACF PACF plots.png", plot = ACF_PACF, width = 18, height = 9, dpi = 300)
 
 ########################################################## ARIMA model ####################################################################
 water_amount_diff1 <- dt.diff1$diff1
@@ -188,7 +184,6 @@ ARIMA_p1 <- ggplot() +
 
 ARIMA_p1
 
-ggsave("/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code/1st difference ARIMA.png", plot = ARIMA_p1, width = 10, height = 7, dpi = 300)
 rm(list=ls()[!ls() %in% c("dt.diff1", "dt.diff2", "dt2")])
 
 ################################################## original data ##################################################
@@ -229,7 +224,7 @@ ARIMA_p2 <- ggplot() +
        y = "Water amount") +
   theme_classic()
 ARIMA_p2
-ggsave("/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code/original ARIMA.png", plot = ARIMA_p2, width = 10, height = 7, dpi = 300)
+
 rm(list=ls()[!ls() %in% c("dt.diff1", "dt.diff2", "dt2", "plot_data1", "forecasted_values1_df", "arima.data1")])
 
 ######################################## zooming in the last time of original data ########################################
@@ -245,7 +240,7 @@ ARIMA_p3 <- ggplot() +
        y = "Water amount") +
   theme_classic()
 ARIMA_p3
-ggsave("/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code/original ARIMA (zooming in).png", plot = ARIMA_p3, width = 10, height = 7, dpi = 300)
+
 rm(list=ls()[!ls() %in% c("dt.diff1", "dt.diff2", "dt2", "plot_data1", "forecasted_values1_df", "arima.data1")])
 
 ################################################## components plots ##################################################
@@ -284,5 +279,5 @@ component.p4 <- ggplot(components, aes(x = Time)) +
   theme_gray()
 
 component.plots <- grid.arrange(component.p1, component.p2, component.p3, component.p4, ncol = 1)
-ggsave("/Users/frank/Desktop/extracurricular activities/competitions/mathematics modelling/03 Prediction Model/03-02 Time Series Analysis/ARIMA/Code/component plots.png", plot = component.plots, width = 10, height = 15, dpi = 300)
+
 rm(list=ls(all=TRUE)) # clear the environment
